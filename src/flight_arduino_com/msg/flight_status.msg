@@ -1,0 +1,1 @@
+bool flight_status
