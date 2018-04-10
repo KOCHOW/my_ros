@@ -6,8 +6,10 @@ project(pid_ctrl)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rospy
   geometry_msgs
   dji_sdk
+  message_generation
 )
 
 find_package(DJIOSDK REQUIRED)
@@ -70,6 +72,7 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs  # Or other packages containing msgs
+  geometry_msgs
 )
 
 ################################################
@@ -104,7 +107,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES dji_sdk_demo
-#  CATKIN_DEPENDS dji_sdk roscpp 
+#  CATKIN_DEPENDS dji_sdk roscpp rospy
 #  DEPENDS dji_sdk
 )
 

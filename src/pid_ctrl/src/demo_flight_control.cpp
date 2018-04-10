@@ -11,6 +11,7 @@
 
 #include "dji_sdk_demo/demo_flight_control.h"
 #include "dji_sdk/dji_sdk.h"
+#include "pid_ctrl/flight_data.h"
 
 const float deg2rad = C_PI/180.0;
 const float rad2deg = 180.0/C_PI;
@@ -21,7 +22,7 @@ ros::ServiceClient query_version_service;
 
 ros::Publisher ctrlPosYawPub;
 ros::Publisher ctrlBrakePub;
-
+ros::Publisher flightDataPub;
 // global variables for subscribed topics
 uint8_t flight_status = 255;
 uint8_t display_mode  = 255;
@@ -31,6 +32,8 @@ geometry_msgs::Vector3 current_pos;
 geometry_msgs::Vector3 object_pos;
 bool take_off_condition = false;
 double input = 0.5;
+
+pid_ctrl::flight_data data;
 
 int main(int argc, char** argv)
 {
@@ -45,6 +48,8 @@ int main(int argc, char** argv)
 
   // Publish the control signal
   ctrlPosYawPub = nh.advertise<sensor_msgs::Joy>("/dji_sdk/flight_control_setpoint_ENUposition_yaw", 10);
+
+  flightDataPub = nh.advertise<pid_ctrl::flight_data>("flight_data", 10);
 
   // We could use dji_sdk/flight_control_setpoint_ENUvelocity_yawrate here, but
   // we use dji_sdk/flight_control_setpoint_generic to demonstrate how to set the flag
@@ -212,7 +217,12 @@ localOffsetFromGpsOffset(geometry_msgs::Vector3&  deltaNed,
         controlVelYawRate.axes.push_back(flag);
         ctrlBrakePub.publish(controlVelYawRate);
         
-        std::cout << "t = " << current_time.toSec() << ", r = " << input << ", pos = " << current_pos.y << ", pitch = " << pitch << '\n';
+        data.t = current_time.toSec();
+        data.r = input;
+        data.pos = current_pos.y;
+        data.pitch = pitch;
+        flightDataPub.publish(data);
+        //std::cout << "t = " << current_time.toSec() << ", r = " << input << ", pos = " << current_pos.y << ", pitch = " << pitch << '\n';
         
       }
     }
