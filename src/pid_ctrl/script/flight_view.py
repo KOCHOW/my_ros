@@ -19,7 +19,7 @@ def get_flight_data(data):
         print(t.secs)
         #rospy.loginfo(rospy.get_caller_id() + " : t = %f, r = %f, pos = %f, pitch = %f" , data.t, data.r, data.pos, data.pitch)
         data_list.append([data.t, data.r, data.pos, data.pitch])
-    if len(data_list) == data_size_limit:
+    if len(data_list) == data_size_limit or len(data_list) > data_size_limit:
         key = "e"
 
 def finish_callback(data):
