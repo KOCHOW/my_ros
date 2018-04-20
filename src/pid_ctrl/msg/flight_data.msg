@@ -1,4 +1,4 @@
 float64 t
-float32 r
-float32 pos
-float32 pitch
+float64 r
+float64 pos
+float64 pitch

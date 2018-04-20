@@ -203,6 +203,11 @@ localOffsetFromGpsOffset(geometry_msgs::Vector3&  deltaNed,
             pitch = pitch > pitchFactor ? pitchFactor : -1.0 * pitchFactor;
           }
           preErr = err;
+          data.t = current_time.toSec();
+          data.r = input;
+          data.pos = current_pos.y;
+          data.pitch = pitch;
+          flightDataPub.publish(data);
         }
         sensor_msgs::Joy controlVelYawRate;
         uint8_t flag = (DJISDK::VERTICAL_VELOCITY   |
@@ -216,12 +221,7 @@ localOffsetFromGpsOffset(geometry_msgs::Vector3&  deltaNed,
         controlVelYawRate.axes.push_back(0);
         controlVelYawRate.axes.push_back(flag);
         ctrlBrakePub.publish(controlVelYawRate);
-        
-        data.t = current_time.toSec();
-        data.r = input;
-        data.pos = current_pos.y;
-        data.pitch = pitch;
-        flightDataPub.publish(data);
+      
         //std::cout << "t = " << current_time.toSec() << ", r = " << input << ", pos = " << current_pos.y << ", pitch = " << pitch << '\n';
         
       }
