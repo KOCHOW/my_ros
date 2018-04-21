@@ -60,8 +60,8 @@ def update(x,ims,ax):
     ims.append([drone_body, drone_center, time])
 
 if __name__ == '__main__':
-    listener()
     fig = plt.figure()
+    listener()
     ims = []
     ax = plt.subplot(111)
     ax.set_xlim(-1, 3)
