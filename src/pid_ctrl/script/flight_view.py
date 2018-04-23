@@ -12,7 +12,7 @@ round = lambda x: (x * 2 + 1)//2
 
 key = "s"
 data_list = []
-data_size_limit = 200
+data_size_limit = 1000
 drone_len = 0.3
 startTime = rospy.Time
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     for x in data_list:
         update(x, ims, ax)
 
-    ani = anime.ArtistAnimation(fig, ims, interval = 100)
+    ani = anime.ArtistAnimation(fig, ims, interval = 20)
     ani.save("hoge.mp4", writer = "ffmpeg")
 
     print("終わりだよ～")
