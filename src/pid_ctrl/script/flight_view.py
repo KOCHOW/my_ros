@@ -12,9 +12,11 @@ round = lambda x: (x * 2 + 1)//2
 
 key = "s"
 data_list = []
-data_size_limit = 1000
+data_size_limit = 200
 drone_len = 0.3
 startTime = rospy.Time
+pos = []
+t = []
 
 def get_flight_data(data): 
     global key
@@ -45,6 +47,9 @@ def listener():
 def update(x,ims,ax):
     xi = []
     eta = []
+    pos.append(x[2])
+    t.append(x[0])
+
     theta = np.deg2rad(x[3])
     xi.append(x[2] - drone_len * np.cos(theta))
     xi.append(x[2] + drone_len * np.cos(theta))
@@ -56,20 +61,27 @@ def update(x,ims,ax):
                         xy = (3, 2),
                         horizontalalignment = 'right',
                         verticalalignment = 'top')]
+    t_pos, = ax2.plot(t, pos, c = "r")
 
-    ims.append([drone_body, drone_center, time])
+    ims.append([drone_body, drone_center, time, t_pos])
 
 if __name__ == '__main__':
     fig = plt.figure()
     listener()
     ims = []
-    ax = plt.subplot(111)
+    data = np.array(data_list)
+    ax = plt.subplot(221)
+    ax2 = plt.subplot(223)
+    ax2.plot(data[:,0], data[:,1])
+    #ax2.plot(data[:,0], data[:,2])
     ax.set_xlim(-1, 3)
     ax.set_ylim(-2, 2)
     for x in data_list:
         update(x, ims, ax)
-
-    ani = anime.ArtistAnimation(fig, ims, interval = 20)
+    data_delta = np.diff(data_list, axis = 0)
+    delta_t = int(np.mean(data_delta, axis = 0)[0] * 1000)
+    print("delta_t = " + str(delta_t))
+    ani = anime.ArtistAnimation(fig, ims, interval = delta_t)
     ani.save("hoge.mp4", writer = "ffmpeg")
 
     print("終わりだよ～")
